@@ -1,0 +1,18 @@
+[submodule "libs/glfw"]
+	path = libs/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "libs/freetype2"]
+	path = libs/freetype2
+	url = https://github.com/aseprite/freetype2
+[submodule "libs/zlib"]
+	path = libs/zlib
+	url = https://github.com/madler/zlib
+[submodule "libs/libpng"]
+	path = libs/libpng
+	url = https://github.com/glennrp/libpng
+[submodule "libs/nanovg"]
+	path = libs/nanovg
+	url = https://github.com/memononen/nanovg
+[submodule "libs/tinyobjloader"]
+	path = libs/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git
