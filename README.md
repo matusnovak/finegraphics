@@ -133,7 +133,7 @@ mkdir build
 cd build
 
 # You can add -G "Unix Makefiles" right after .. if you wish
-cmake ..  -DCMAKE_INSTALL_PREFIX=C:/... -DCMAKE_BUILD_TYPE=MinSizeRel
+cmake ..  -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=MinSizeRel
 
 # Build
 make all
@@ -158,14 +158,15 @@ mkdir build
 cd build
 
 # You can replace the "Visual Studio 15 2017" with 
-# "Visual Studio 15 2017 Win64" to compile for 64-bit applications
+# "Visual Studio 15 2017 Win64" to compile for 64-bit applications.
+# You can also replace it with -G "MinGW Makefiles"
 cmake .. -G "Visual Studio 15 2017" -DCMAKE_INSTALL_PREFIX=C:/...
 
 # Build using cmake (or open it in Visual Studio IDE)
-cmake --build . --target BUILD_ALL --config MinSizeRel
+cmake --build . --target ALL_BUILD --config MinSizeRel
 
 # Optionally run the INSTALL
-sudo cmake --build . --target INSTALL --config MinSizeRel
+cmake --build . --target INSTALL --config MinSizeRel
 ```
 
 ## Using FineGraphics
