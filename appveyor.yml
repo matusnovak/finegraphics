@@ -65,10 +65,10 @@ install:
   - cmd: curl -k -o next_git_tag.bat https://gist.githubusercontent.com/matusnovak/eba81343f5578c38cf0a9bc22b548727/raw/e3745d1cda3391a7cf30c7478e91297d7e2b4243/next_git_tag.bat
   - cmd: git submodule init
   - cmd: git submodule update
-  - cmd: if [%COMPILER%]==[mingw] (mkdir build-debug & mkdir build-release)
+  - cmd: if [%COMPILER%]==[mingw] (mkdir build-debug)
+  - cmd: if [%COMPILER%]==[mingw] (mkdir build-release)
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - cmd: set PATH=%MINGW_DIR_BIN%;%PATH%
-  - cmd: echo %PATH%
   - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug)
   - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel)
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install")
@@ -80,10 +80,11 @@ build_script:
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config MinSizeRel)
 
 test_script:
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug")
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel")
+  - cmd: set NON_OPENGL_TESTS=-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose %NON_OPENGL_TESTS%)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose %NON_OPENGL_TESTS%)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug" %NON_OPENGL_TESTS%)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel" %NON_OPENGL_TESTS%)
 
 after_test:
   - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target install)
