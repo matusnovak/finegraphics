@@ -64,7 +64,7 @@ install:
   - cmd: mkdir build
   - cmd: if [%COMPILER%]==[mingw] setx PATH %MINGW_DIR_BIN%:%PATH%
   - cmd: if [%COMPILER%]==[mingw] cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
-  - cmd: if [%COMPILER%]==[msvc] cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install")
+  - cmd: if [%COMPILER%]==[msvc] cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install"
 
 before_build:
   - cmd: call .\next_git_tag.bat
