@@ -15,8 +15,6 @@ skip_tags: true
 #    environment configuration    #
 #---------------------------------#
 platform: Any CPU
-init:
-  - cmd: echo "Compiling with: %GENERATOR%"
 environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
