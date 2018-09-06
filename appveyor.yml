@@ -60,27 +60,22 @@ install:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: mkdir build
-  - cmd: cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install"
+  - cmd: cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
 
 before_build:
   - cmd: call .\next_git_tag.bat
 
 build_script:
-  - cmd: if [%MINGW_DIR_BIN%]==[] echo "MINGW_DIR_BIN is empty!"
-  - cmd: if NOT [%MINGW_DIR_BIN%]==[] echo "MINGW_DIR_BIN is NOT empty!"
-  - cmd: cd build & if [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config Debug
-  - cmd: cd build & if [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config MinSizeRel
-  - cmd: cd build & if NOT [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config Debug -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
-  - cmd: cd build & if NOT [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config MinSizeRel -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
-
+  - cmd: cd build & cmake --build . --target ALL_BUILD --config Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
+  - cmd: cd build & cmake --build . --target ALL_BUILD --config MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
 test_script:
   - cmd: cd build & ctest --verbose -C "Debug"
   - cmd: cd build & ctest --verbose -C "MinSizeRel"
 
 after_test:
-  - cmd: cd build & cmake --build . --target INSTALL --config Debug
+  - cmd: cd build & cmake --build . --target INSTALL --config Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
   - cmd: ren install debug
-  - cmd: cd build & cmake --build . --target INSTALL --config MinSizeRel
+  - cmd: cd build & cmake --build . --target INSTALL --config MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
   - cmd: ren install release
   - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\debug .\release
 
