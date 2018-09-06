@@ -2,6 +2,7 @@
 #ifndef FFW_MAT3X3
 #define FFW_MAT3X3
 
+#include <cstring>
 #include "vec3.h"
 #include "quaternion.h"
 
