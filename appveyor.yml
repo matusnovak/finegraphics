@@ -33,30 +33,30 @@ environment:
     MINGW_DIR_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
     CMAKE_C_COMPILER: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin/gcc.exe
     CMAKE_CXX_COMPILER: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin/g++.exe
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-#    TOOLSET: vc12
-#    ARCH: win32
-#    GENERATOR: '"Visual Studio 12 2013"'
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-#    TOOLSET: vc12
-#    ARCH: win64
-#    GENERATOR: '"Visual Studio 12 2013 Win64"'
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-#    TOOLSET: vc14
-#    ARCH: win32
-#    GENERATOR: '"Visual Studio 14 2015"'
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-#    TOOLSET: vc14
-#    ARCH: win64
-#    GENERATOR: '"Visual Studio 14 2015 Win64"'
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-#    TOOLSET: vc15
-#    ARCH: win32
-#    GENERATOR: '"Visual Studio 15 2017"'
-#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-#    TOOLSET: vc15
-#    ARCH: win64
-#    GENERATOR: '"Visual Studio 15 2017 Win64"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+    TOOLSET: vc12
+    ARCH: win32
+    GENERATOR: '"Visual Studio 12 2013"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+    TOOLSET: vc12
+    ARCH: win64
+    GENERATOR: '"Visual Studio 12 2013 Win64"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    TOOLSET: vc14
+    ARCH: win32
+    GENERATOR: '"Visual Studio 14 2015"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    TOOLSET: vc14
+    ARCH: win64
+    GENERATOR: '"Visual Studio 14 2015 Win64"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    TOOLSET: vc15
+    ARCH: win32
+    GENERATOR: '"Visual Studio 15 2017"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    TOOLSET: vc15
+    ARCH: win64
+    GENERATOR: '"Visual Studio 15 2017 Win64"'
 
 #---------------------------------#
 #            steps                #
@@ -69,9 +69,9 @@ install:
   - cmd: if [%COMPILER%]==[mingw] (mkdir build-release)
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - cmd: set PATH=%MINGW_DIR_BIN%;%PATH%
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug & cd ..)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
 
 build_script:
   - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target all & cd ..)
@@ -89,10 +89,10 @@ test_script:
 after_test:
   - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target install & cd ..)
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config Debug & cd ..)
-  - cmd: ren install debug
+#  - cmd: ren install debug
   - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target install & cd ..)
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config MinSizeRel & cd ..)
-  - cmd: ren install release
+#  - cmd: ren install release
   - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\debug .\release
 
 before_deploy:
