@@ -60,22 +60,30 @@ install:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: mkdir build
-  - cmd: cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
+  - cmd: |
+      if defined MINGW_DIR_BIN (
+        cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin" -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
+      ) else (
+        cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install"
+      )
 
 before_build:
   - cmd: call .\next_git_tag.bat
 
 build_script:
-  - cmd: cd build & cmake --build . --target ALL_BUILD --config Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
-  - cmd: cd build & cmake --build . --target ALL_BUILD --config MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
+  - cmd: |
+      cd build
+      cmake --build . --target ALL_BUILD --config Debug
+      cmake --build . --target ALL_BUILD --config MinSizeRel
+
 test_script:
   - cmd: cd build & ctest --verbose -C "Debug"
   - cmd: cd build & ctest --verbose -C "MinSizeRel"
 
 after_test:
-  - cmd: cd build & cmake --build . --target INSTALL --config Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
+  - cmd: cd build & cmake --build . --target INSTALL --config Debug
   - cmd: ren install debug
-  - cmd: cd build & cmake --build . --target INSTALL --config MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
+  - cmd: cd build & cmake --build . --target INSTALL --config MinSizeRel
   - cmd: ren install release
   - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\debug .\release
 
