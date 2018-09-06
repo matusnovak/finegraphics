@@ -71,6 +71,14 @@ else()
   add_dependencies(LIBPNG ZLIB)
 endif()
 
+if(MSVC)
+  set(LIBPNG_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/libs/libpng ${CMAKE_BINARY_DIR}/LIBPNG-prefix/src/LIBPNG-build)
+  set(LIBPNG_LIBRARY ${CMAKE_BINARY_DIR}/LIBPNG-prefix/src/LIBPNG-build/MinSizeRel/libpng16_static.lib)
+else(MSVC)
+  set(LIBPNG_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/libs/libpng ${CMAKE_BINARY_DIR}/LIBPNG-prefix/src/LIBPNG-build)
+  set(LIBPNG_LIBRARY ${CMAKE_BINARY_DIR}/LIBPNG-prefix/src/LIBPNG-build/libpng16.a)
+endif(MSVC)
+
 ExternalProject_Add(FREETYPE2
   DOWNLOAD_COMMAND ""
   SOURCE_DIR ${CMAKE_SOURCE_DIR}/libs/freetype2

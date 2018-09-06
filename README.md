@@ -2,7 +2,9 @@
 
 ## Introduction 
 
-The FineGraphics library is part of a FineFramework project. This standalone library provides the basic API wrappers around OpenGL, such as textures, framebuffers, renderbuffers. This library also provides window management and user input handling in an easy to follow wrapper class using GLFW. For the 2D drawing, a nanovg is used as the backend. This library does not hold your hand, nor does it forces you to design your application in one specific way. For example, if you choose not to use the GLRenderWindow class (which uses GLFW) you are free to use any other OpenGL context providing library and use any other provided OpenGL wrappers in FineGraphics.
+The FineGraphics is a standalone library that provides the basic API wrappers around OpenGL, such as textures, framebuffers, renderbuffers, shaders, including window handling (using GLFW) and basic 2D canvas rendering (using nanovg library). This library does not hold your hand, nor does it forces you to design your application in one specific way. For example, when using the GLRenderWindow class to create your window, it will not initialize any hidden variables (such as fonts, etc...). To do that, you will have to use specific classes and explicitly call the necessary methods. Some heavy OpenGL frameworks usually intiailize many things for you in the background, this FineGraphics is trying to do the opposite. When you create a window, only a window is created. If you create a 2D Canvas for rendering, only a canvas created. No hidden global state, except Core OpenGL extensions that are loaded only once on the window creation. This library is meant to be lightweight and to provide the necessary minimum to handle OpenGL the easy way.
+
+This library also bundles all third party libraries statically. Meaning, you only have to link the `.lib`  file (or `.so` on Linux). No need to manually download the libraries (GLFW, FreeType2, etc.), and spend an entire weekend figuring out how to plug it all together, and going through outdated or complicated instructions for some libraries. You either download the pre-built FineGraphics from the GitHub releases, or build it manually (which is super easy), and you are good to go!
 
 **API Documentation is provided at <http://matusnovak.github.io/finegraphics/>**
 
@@ -17,7 +19,7 @@ The FineGraphics library is part of a FineFramework project. This standalone lib
 
 ## Dependencies
 
-All dependencies listed here are already included as a git submodule and will be statically linked to the fineframework library. Therefore, no need to compile them manually, not link them manually! Everything is automated via CMake.
+All dependencies listed here are already included as a git submodule and will be statically linked to the fineframework library. Therefore, no need to compile them manually, nor link them manually! Everything is automated via CMake.
 
 * [freetype2](https://www.freetype.org/) - Used by NanoVG for font loading
 * [glfw](https://www.glfw.org/) - Used as a primary backend (ffw::GLRenderWindow) for creating GL context and handling user input
@@ -106,7 +108,16 @@ One of the following compilers:
 
 You can compile the FineGraphics from the source code (see below), or [use one of the automatically built releases from GitHub Releases](https://github.com/matusnovak/finegraphics/releases).
 
-**Compiling from source code**
+### Linux
+
+Install this packages before compiling. These are needed for git, cmake, g++, OpenGL, and X11. 
+When distributing an application linked with FineGraphics, these packages are not required for the users.
+
+```bash
+sudo apt install build-essential git cmake xorg-dev libgl1-mesa-glx libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+```
+
+Then, compile from the source code:
 
 ```bash
 # Clone the repository
@@ -121,28 +132,61 @@ git submodule update
 mkdir build
 cd build
 
-# You can replace the "Visual Studio 15 2017" 
-# with "Unix Makefiles" on Linux or OSX
+# You can add -G "Unix Makefiles" right after .. if you wish
+cmake ..  -DCMAKE_INSTALL_PREFIX=C:/... -DCMAKE_BUILD_TYPE=MinSizeRel
+
+# Build
+make all
+
+# Optionally run the INSTALL step
+sudo make install
+```
+
+### Windows
+
+```bash
+# Clone the repository
+git clone https://github.com/matusnovak/finegraphics
+cd finegraphics
+
+# Download the dependencies
+git submodule init
+git submodule update
+
+# Create build folder and run cmake
+mkdir build
+cd build
+
+# You can replace the "Visual Studio 15 2017" with 
+# "Visual Studio 15 2017 Win64" to compile for 64-bit applications
 cmake .. -G "Visual Studio 15 2017" -DCMAKE_INSTALL_PREFIX=C:/...
 
 # Build using cmake (or open it in Visual Studio IDE)
 cmake --build . --target BUILD_ALL --config MinSizeRel
 
 # Optionally run the INSTALL
-cmake --build . --target INSTALL --config MinSizeRel
+sudo cmake --build . --target INSTALL --config MinSizeRel
 ```
 
 ## Using FineGraphics
 
-First, compile the library (see section above), next to use the finegraphics in your project, simply include the `C:/path/to/finegraphics/include` and link the `finegraphics.lib` (or `finegraphics.a` on Linux/OSX). 
+### Windows
 
-You will also need the `finegraphics.dll` (or `finegraphics.so` on Linux and `finegraphics.dylib` on OSX) in order to run the application. On Windows, simply copy the `finegraphics.dll` and put it next to your executable file. On Linux and OSX you can do the same, or put it in a OS specific library folder (e.g. `/usr/local/lib`).
+First, compile the library (see section above), next to use the finegraphics in your project, simply include the `C:/path/to/finegraphics/include` and link the `finegraphics.lib`. You will also need the `finegraphics.dll` in order to run the application. Simply copy the DLL into the executable folder. You can find the `.lib` and `.dll` files in the cmake build folder.
 
-Go through the examples provided (see examples folder), or read the docummentation at <http://matusnovak.github.io/finegraphics/>
+### Linux/OSX
+
+First, compile the library (see section above), next to use the finegraphics in your project, simply include the `~/finegraphics/include` (or `/usr/local/include` if you have installed it) and link the `finegraphics.so`. You can find the `.so` files in the cmake build folder (or at the installed path provided by CMAKE_INSTALL_PREFIX).
+
+If you are planning to distribute your application with FineGraphics, you will need to copy the `finegraphics.so` and include it within your application. For example, the most simple way, copy it into the executable folder (same as in Windows).
+
+## Documentation
+
+Documentation can be found at <http://matusnovak.github.io/finegraphics/>
 
 ## Examples
 
-All examples are located in the examples folder, see the <examples/README.md> file.
+All examples are located in the [examples folder](examples/README.md).
 
 ## Alternatives
 
