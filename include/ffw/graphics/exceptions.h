@@ -2,6 +2,7 @@
 #ifndef FFW_GRAPHICS_EXCEPTIONS
 #define FFW_GRAPHICS_EXCEPTIONS
 
+#include <stdexcept>
 #include <string>
 
 namespace ffw {
