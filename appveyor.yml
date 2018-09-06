@@ -66,10 +66,12 @@ before_build:
   - cmd: call .\next_git_tag.bat
 
 build_script:
-  - cmd: cd build & if "%MINGW_DIR_BIN%"=="" cmake --build . --target ALL_BUILD --config Debug
-  - cmd: cd build & if "%MINGW_DIR_BIN%"=="" cmake --build . --target ALL_BUILD --config MinSizeRel
-  - cmd: cd build & if NOT "%MINGW_DIR_BIN%"=="" cmake --build . --target ALL_BUILD --config Debug -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
-  - cmd: cd build & if NOT "%MINGW_DIR_BIN%"=="" cmake --build . --target ALL_BUILD --config MinSizeRel -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
+  - cmd: if [%MINGW_DIR_BIN%]==[] echo "MINGW_DIR_BIN is empty!"
+  - cmd: if NOT [%MINGW_DIR_BIN%]==[] echo "MINGW_DIR_BIN is NOT empty!"
+  - cmd: cd build & if [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config Debug
+  - cmd: cd build & if [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config MinSizeRel
+  - cmd: cd build & if NOT [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config Debug -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
+  - cmd: cd build & if NOT [%MINGW_DIR_BIN%]==[] cmake --build . --target ALL_BUILD --config MinSizeRel -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
 
 test_script:
   - cmd: cd build & ctest --verbose -C "Debug"
