@@ -22,13 +22,13 @@ environment:
     TOOLSET: w64-mingw32
     ARCH: i686
     GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:/Program Files (x86)/mingw-w64/i686-5.4.0-posix-dwarf-rt_v5-rev0/mingw32\bin
+    MINGW_DIR_BIN: C:/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     COMPILER: mingw
     TOOLSET: w64-mingw32
     ARCH: x86_64
     GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+    MINGW_DIR_BIN: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin
 #  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
 #    TOOLSET: vc12
 #    ARCH: win32
@@ -62,7 +62,7 @@ install:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: mkdir build
-  - cmd: if [%COMPILER%]==[mingw] xset PATH %MINGW_DIR_BIN%:%PATH%
+  - cmd: if [%COMPILER%]==[mingw] setx PATH "%MINGW_DIR_BIN%;%PATH%;"
   - cmd: if [%COMPILER%]==[mingw] cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin"
   - cmd: if [%COMPILER%]==[msvc] cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install"
 
