@@ -51,10 +51,11 @@ dependencies/
 
 /Win32
 
-# GitBook stuff
-_book
-node_modules
-.publish
+# Vuepress stuff
+_book/
+node_modules/
+dist/
+.publish/
 
 # Visual Studio Code settings
 .vscode

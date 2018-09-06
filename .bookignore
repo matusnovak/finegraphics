@@ -1,8 +1,0 @@
-!doxygen/*.md
-doxygen/xml/
-build/
-include/
-examples/*.cpp
-libs/
-src/
-tests/

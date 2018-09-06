@@ -1,6 +1,5 @@
 # FineGraphics
 
-
 ## Introduction 
 
 The FineGraphics library is part of a FineFramework project. This standalone library provides the basic API wrappers around OpenGL, such as textures, framebuffers, renderbuffers. This library also provides window management and user input handling in an easy to follow wrapper class using GLFW. For the 2D drawing, a nanovg is used as the backend. This library does not hold your hand, nor does it forces you to design your application in one specific way. For example, if you choose not to use the GLRenderWindow class (which uses GLFW) you are free to use any other OpenGL context providing library and use any other provided OpenGL wrappers in FineGraphics.
@@ -20,8 +19,12 @@ The FineGraphics library is part of a FineFramework project. This standalone lib
 
 All dependencies listed here are already included as a git submodule and will be statically linked to the fineframework library. Therefore, no need to compile them manually, not link them manually! Everything is automated via CMake.
 
-* [freetype2](https://www.freetype.org/)
-* [glfw](https://www.glfw.org/)
+* [freetype2](https://www.freetype.org/) - Used by NanoVG for font loading
+* [glfw](https://www.glfw.org/) - Used as a primary backend (ffw::GLRenderWindow) for creating GL context and handling user input
+* [libpng](https://github.com/glennrp/libpng) - Needed by FreeType2
+* [nanovg](https://github.com/memononen/nanovg) - Used as a 2D canvas rendering backend
+* [tinyobjloader](https://github.com/syoyo/tinyobjloader.git) - Only used in examples
+* [zlib](https://github.com/madler/zlib) - Needed by FreeType2
 
 ## TODO
 
@@ -33,7 +36,7 @@ All dependencies listed here are already included as a git submodule and will be
 
 Create a rendering window and draw a rectangle:
 
-```c++
+```cpp
 #include <ffw/graphics.h>
 #include <iostream>
 
@@ -131,63 +134,15 @@ cmake --build . --target INSTALL --config MinSizeRel
 
 ## Using FineGraphics
 
-First, compile the library (see section above).
+First, compile the library (see section above), next to use the finegraphics in your project, simply include the `C:/path/to/finegraphics/include` and link the `finegraphics.lib` (or `finegraphics.a` on Linux/OSX). 
 
-To use the finegraphics in your project, simply include the `C:/path/to/finegraphics/include` and link the `finegraphics.lib` (or `finegraphics.a` on Linux/OSX). 
+You will also need the `finegraphics.dll` (or `finegraphics.so` on Linux and `finegraphics.dylib` on OSX) in order to run the application. On Windows, simply copy the `finegraphics.dll` and put it next to your executable file. On Linux and OSX you can do the same, or put it in a OS specific library folder (e.g. `/usr/local/lib`).
 
 Go through the examples provided (see examples folder), or read the docummentation at <http://matusnovak.github.io/finegraphics/>
 
 ## Examples
 
-All examples are located in the examples folder.
-
-### Clock
-
-[Simple analog clock using the 2D canvas API.](https://github.com/matusnovak/finegraphics/examples/clock.cpp)
-
-![clock.jpg](examples/clock.jpg)
-
-### Cube
-
-[Allocate a vertex buffer and create a shader program to render cube](https://github.com/matusnovak/finegraphics/examples/cube.cpp)
-
-![cube.jpg](examples/cube.jpg)
-
-### CubeMap
-
-[Load a cubemap from a raw pixels and allocate GLTextureCubemap with a shader](https://github.com/matusnovak/finegraphics/examples/cubemap.cpp)
-
-![cubemap.jpg](examples/cubemap.jpg)
-
-### True Type Font
-
-[Draw text using True Type font](https://github.com/matusnovak/finegraphics/examples/truetypefont.cpp)
-
-![truetypefont.jpg](examples/truetypefont.jpg)
-
-### Tree
-
-[Render a binary tree using the Canvas](https://github.com/matusnovak/finegraphics/examples/tree.cpp)
-
-![tree.jpg](examples/tree.jpg)
-
-### Empty
-
-[Hello world program using the Canvas](https://github.com/matusnovak/finegraphics/examples/empty.cpp)
-
-![empty.jpg](examples/empty.jpg)
-
-### Image
-
-[Load an image into GLTexture2D and render it using the Canvas](examples/image.cpp)
-
-![image.jpg](examples/image.jpg)
-
-### Shader
-
-[Compile and use a simple hello world shader program](https://github.com/matusnovak/finegraphics/examples/shader.cpp)
-
-![shader.jpg](examples/shader.jpg)
+All examples are located in the examples folder, see the <examples/README.md> file.
 
 ## Alternatives
 

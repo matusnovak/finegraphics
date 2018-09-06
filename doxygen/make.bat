@@ -1,2 +1,2 @@
 doxygen Doxyfile || exit /b
-doxybook -i doxygen/xml -o doxygen -s SUMMARY.md --limitindex true
+doxybook -i doxygen/xml -o doxygen -t vuepress
