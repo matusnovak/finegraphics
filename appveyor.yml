@@ -21,36 +21,36 @@ environment:
     TOOLSET: w64-mingw32
     ARCH: i686
     GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-    TOOLSET: w64-mingw32
-    ARCH: x86_64
-    GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-    TOOLSET: vc12
-    ARCH: win32
-    GENERATOR: '"Visual Studio 12 2013"'
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-    TOOLSET: vc12
-    ARCH: win64
-    GENERATOR: '"Visual Studio 12 2013 Win64"'
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-    TOOLSET: vc14
-    ARCH: win32
-    GENERATOR: '"Visual Studio 14 2015"'
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-    TOOLSET: vc14
-    ARCH: win64
-    GENERATOR: '"Visual Studio 14 2015 Win64"'
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    TOOLSET: vc15
-    ARCH: win32
-    GENERATOR: '"Visual Studio 15 2017"'
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    TOOLSET: vc15
-    ARCH: win64
-    GENERATOR: '"Visual Studio 15 2017 Win64"'
+    MINGW_DIR_BIN: C:/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+#    TOOLSET: w64-mingw32
+#    ARCH: x86_64
+#    GENERATOR: '"MinGW Makefiles"'
+#    MINGW_DIR_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+#    TOOLSET: vc12
+#    ARCH: win32
+#    GENERATOR: '"Visual Studio 12 2013"'
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+#    TOOLSET: vc12
+#    ARCH: win64
+#    GENERATOR: '"Visual Studio 12 2013 Win64"'
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#    TOOLSET: vc14
+#    ARCH: win32
+#    GENERATOR: '"Visual Studio 14 2015"'
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#    TOOLSET: vc14
+#    ARCH: win64
+#    GENERATOR: '"Visual Studio 14 2015 Win64"'
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+#    TOOLSET: vc15
+#    ARCH: win32
+#    GENERATOR: '"Visual Studio 15 2017"'
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+#    TOOLSET: vc15
+#    ARCH: win64
+#    GENERATOR: '"Visual Studio 15 2017 Win64"'
 
 #---------------------------------#
 #            steps                #
@@ -60,21 +60,13 @@ install:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: mkdir build
-  - cmd: >-
-      if defined MINGW_DIR_BIN (
-        cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin" -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%\gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%\g++.exe"
-      ) else (
-        cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install"
-      )
+  - cmd: cd build & if defined MINGW_DIR_BIN (cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin" -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%/gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%/g++.exe") else (cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install")
 
 before_build:
   - cmd: call .\next_git_tag.bat
 
 build_script:
-  - cmd: >-
-      cd build
-      cmake --build . --target ALL_BUILD --config Debug
-      cmake --build . --target ALL_BUILD --config MinSizeRel
+  - cmd: cd build & cmake --build . --target ALL_BUILD --config Debug & cmake --build . --target ALL_BUILD --config MinSizeRel
 
 test_script:
   - cmd: cd build & ctest --verbose -C "Debug"
