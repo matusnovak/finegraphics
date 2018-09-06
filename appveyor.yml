@@ -15,6 +15,9 @@ skip_tags: true
 #    environment configuration    #
 #---------------------------------#
 platform: Any CPU
+init:
+- cmd: >-
+    echo "Compiling with: %GENERATOR%"
 environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
@@ -55,12 +58,9 @@ environment:
 #---------------------------------#
 #            steps                #
 #---------------------------------#
-init:
-- cmd: >- 
-    curl -fsS -o next_git_tag.bat https://gist.githubusercontent.com/matusnovak/eba81343f5578c38cf0a9bc22b548727/raw/e3745d1cda3391a7cf30c7478e91297d7e2b4243/next_git_tag.bat
-
 install:
 - cmd: >- 
+    curl -fsS -o next_git_tag.bat https://gist.githubusercontent.com/matusnovak/eba81343f5578c38cf0a9bc22b548727/raw/e3745d1cda3391a7cf30c7478e91297d7e2b4243/next_git_tag.bat
     git submodule init
     git submodule update
     mkdir build
