@@ -22,13 +22,17 @@ environment:
     TOOLSET: w64-mingw32
     ARCH: i686
     GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin
+    MINGW_DIR_BIN: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+    CMAKE_C_COMPILER: C:/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/gcc.exe
+    CMAKE_CXX_COMPILER: C:/mingw-w64/i686-6.3.0-posix-dwarf-rt_v5-rev1/mingw32/bin/g++.exe
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     COMPILER: mingw
     TOOLSET: w64-mingw32
     ARCH: x86_64
     GENERATOR: '"MinGW Makefiles"'
-    MINGW_DIR_BIN: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin
+    MINGW_DIR_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+    CMAKE_C_COMPILER: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin/gcc.exe
+    CMAKE_CXX_COMPILER: C:/mingw-w64/x86_64-6.3.0-posix-seh-rt_v5-rev1/mingw64/bin/g++.exe
 #  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
 #    TOOLSET: vc12
 #    ARCH: win32
@@ -62,10 +66,10 @@ install:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: if [%COMPILER%]==[mingw] (mkdir build-debug & mkdir build-release)
-  - cmd: if [%COMPILER%]==[mingw] (set PATH="%MINGW_DIR_BIN%;%PATH%")
+  - cmd: set PATH=%MINGW_DIR_BIN%;%PATH%
   - cmd: echo %PATH%
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin" -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%/gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%/g++.exe")
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin" -DCMAKE_C_COMPILER="%MINGW_DIR_BIN%/gcc.exe" -DCMAKE_CXX_COMPILER="%MINGW_DIR_BIN%/g++.exe")
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin")
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_IGNORE_PATH="C:/Program Files/Git/usr/bin")
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install")
 
 build_script:
