@@ -1,5 +1,5 @@
 module.exports = {
-    base: '/finegraphics',
+    base: '/finegraphics/',
     title: "FineGraphics",
     description: "A simple OpenGL helper library part of a FineFramework project",
     themeConfig: {
