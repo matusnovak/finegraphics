@@ -16,3 +16,6 @@
 [submodule "libs/tinyobjloader"]
 	path = libs/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader.git
+[submodule "libs/bzip2-1.0.6"]
+	path = libs/bzip2-1.0.6
+	url = https://github.com/enthought/bzip2-1.0.6
