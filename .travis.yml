@@ -41,7 +41,6 @@ script:
   - cd build && (cmake ..  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=MinSizeRel || travis_terminate 1) && cd ..
   - cd build && (make install || travis_terminate 1) && cd ..
   - cd build && (ctest --verbose -C MinSizeRel -E "test_gl" || travis_terminate 1) && cd ..
-  - ./next_git_tag.sh
   - export GCC_MACHINE=$(gcc -dumpmachine)
   - export GCC_VERSION=$(gcc -dumpversion)
   - cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" *
@@ -56,9 +55,7 @@ notifications:
   on_success: always
   on_failure: always
 before_deploy:
-  - export CURRENT_BRANCH=$TRAVIS_BRANCH
-  - chmod +x .ci/gittag.sh
-  - source .ci/gittag.sh
+  - ./next_git_tag.sh
   - echo "Exporting TRAVIS_TAG $GITHUB_RELEASE_TAG"
   - export TRAVIS_TAG=$GITHUB_RELEASE_TAG
 deploy:

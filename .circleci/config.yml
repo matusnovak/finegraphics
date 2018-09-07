@@ -44,7 +44,7 @@ compile_gcc: &compile_gcc
           ./next_git_tag.sh
           GCC_MACHINE=$(gcc -dumpmachine)
           GCC_VERSION=$(gcc -dumpversion)
-          cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" *
+          cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" * && cd ..
           mkdir /tmp/install
           cp *.zip /tmp/install
           
