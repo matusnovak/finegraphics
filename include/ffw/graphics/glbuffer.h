@@ -197,6 +197,16 @@ namespace ffw {
         GLBuffer(GL_ARRAY_BUFFER, data, size, type) {
             
         }
+
+        GLVertexBuffer(const GLVertexBuffer& other) = delete;
+        GLVertexBuffer(GLVertexBuffer&& other) NOEXCEPT :GLBuffer(std::forward<GLBuffer>(other)){
+
+        }
+        GLVertexBuffer& operator = (const GLVertexBuffer& other) = delete;
+        GLVertexBuffer& operator = (GLVertexBuffer&& other) NOEXCEPT {
+            GLBuffer::operator=(std::forward<GLBuffer>(other));
+            return *this;
+        }
     };
     /**
      * @ingroup graphics
@@ -215,6 +225,16 @@ namespace ffw {
         GLElementBuffer(const GLvoid* data, const GLsizei size, const GLenum type):
         GLBuffer(GL_ELEMENT_ARRAY_BUFFER, data, size, type) {
             
+        }
+
+        GLElementBuffer(const GLElementBuffer& other) = delete;
+        GLElementBuffer(GLElementBuffer&& other) NOEXCEPT :GLBuffer(std::forward<GLBuffer>(other)) {
+
+        }
+        GLElementBuffer& operator = (const GLElementBuffer& other) = delete;
+        GLElementBuffer& operator = (GLElementBuffer&& other) NOEXCEPT {
+            GLBuffer::operator=(std::forward<GLBuffer>(other));
+            return *this;
         }
     };
 };

@@ -82,31 +82,31 @@ install:
   - cmd: if [%COMPILER%]==[msvc] (mkdir build)
   - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - cmd: set PATH=%MINGW_DIR_BIN%;%PATH%
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_DEBUG_POSTFIX=_d & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEBUG_POSTFIX=_d || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_DEBUG_POSTFIX=_d || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="..\install" -DCMAKE_DEBUG_POSTFIX=_d || exit 1 & cd ..)
 
 build_script:
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target all & cd ..)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target all & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config Debug & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config MinSizeRel & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target all || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target all || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config Debug || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config MinSizeRel || exit 1 & cd ..)
 
 test_script:
   - cmd: set NON_OPENGL_TESTS=-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose %NON_OPENGL_TESTS% & cd ..)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose %NON_OPENGL_TESTS% & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug" %NON_OPENGL_TESTS% & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel" %NON_OPENGL_TESTS% & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose %NON_OPENGL_TESTS% || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose %NON_OPENGL_TESTS% || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug" %NON_OPENGL_TESTS% || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel" %NON_OPENGL_TESTS% || exit 1 & cd ..)
 
 after_test:
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target install & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config Debug & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target install || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config Debug || exit 1 & cd ..)
 #  - cmd: ren install debug
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target install & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config MinSizeRel & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target install || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config MinSizeRel || exit 1 & cd ..)
 #  - cmd: ren install release
-  - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\install
+  - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\install || exit 1
 
 before_deploy:
   - cmd: call .\next_git_tag.bat
