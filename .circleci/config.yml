@@ -27,13 +27,15 @@ compile_gcc: &compile_gcc
     - run:
         name: Build
         command: |
+          mkdir build
           cd build
-          make install || exit 1
+          cmake ..  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=MinSizeRel
+          make install
     - run:
         name: Test
         command: |
           cd build
-          export NON_OPENGL_TESTS=-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4
+          NON_OPENGL_TESTS="-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4"
           ctest --verbose -C MinSizeRel $NON_OPENGL_TESTS
     - run:
         name: Package
