@@ -43,7 +43,7 @@ script:
   - cd build && (ctest --verbose -C MinSizeRel -E "test_gl" || travis_terminate 1) && cd ..
   - export GCC_MACHINE=$(gcc -dumpmachine)
   - export GCC_VERSION=$(gcc -dumpversion)
-  - cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" *
+  - cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" * && cd ..
 branches:
   only:
   - master
@@ -55,6 +55,8 @@ notifications:
   on_success: always
   on_failure: always
 before_deploy:
+  - pwd
+  - ls
   - ./next_git_tag.sh
   - echo "Exporting TRAVIS_TAG $GITHUB_RELEASE_TAG"
   - export TRAVIS_TAG=$GITHUB_RELEASE_TAG
