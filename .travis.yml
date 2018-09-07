@@ -44,6 +44,16 @@ script:
   - export GCC_MACHINE=$(gcc -dumpmachine)
   - export GCC_VERSION=$(gcc -dumpversion)
   - cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" * && cd ..
+  - if [ $TRAVIS_OS_NAME == linux ]; then wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then wget https://github.com/aktau/github-release/releases/download/v0.7.2/darwin-amd64-github-release.tar.bz2; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then tar -xvjf linux-amd64-github-release.tar.bz2 && cp ./bin/linux/amd64/github-release . ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then tar -xvjf darwin-amd64-github-release.tar.bz2 && cp ./bin/darwin/amd64/github-release . ; fi
+  - export COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+  - source ./next_git_tag.sh
+  - export GITHUB_PROJECT_USERNAME=${TRAVIS_REPO_SLUG%/*}
+  - export GITHUB_PROJECT_REPONAME=${TRAVIS_REPO_SLUG#*/}
+  - if [ $TRAVIS_BRANCH == master ]; then ./github-release release --user $GITHUB_PROJECT_USERNAME --repo $GITHUB_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name "Compiled - $GITHUB_RELEASE_TAG" --description "$COMMIT_MESSAGE" || true; fi
+  - if [ $TRAVIS_BRANCH == master ]; then ./github-release upload --user $GITHUB_PROJECT_USERNAME --repo $GITHUB_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --replace --name finegraphics-$GCC_MACHINE-$GCC_VERSION.zip --file finegraphics-$GCC_MACHINE-$GCC_VERSION.zip || travis_terminate 1; fi
 branches:
   only:
   - master
@@ -54,26 +64,3 @@ notifications:
     - matusnov@gmail.com
   on_success: always
   on_failure: always
-before_deploy:
-  - pwd
-  - ls
-  - source ./next_git_tag.sh
-  - echo "Exporting TRAVIS_TAG $GITHUB_RELEASE_TAG"
-  - export TRAVIS_TAG=$GITHUB_RELEASE_TAG
-deploy:
-  provider: releases
-  overwrite: true
-  skip_cleanup: true
-  target_commitish: $TRAVIS_COMMIT
-  tag_name: $TRAVIS_TAG
-  name: "Compiled - $TRAVIS_TAG"
-  body: "$TRAVIS_COMMIT_MESSAGE"
-  draft: false
-  file_glob: true
-  api_key:
-    secure: axWbsQHE2zeFyt7EcLRyS5qpWUji1te4oqQMJv2iNqExg8JzhdofYLF6KMzaEKMk5Izo4wa7GrynzdCZ+dv9xG9NaJZHYthobVqG9fze6PYYcZadWbk3kAZeCvDUAB/d0/3Yx6VVFtm3EzprmbXiE6Yh6T5tMbNl5qGiHrYnrrfLMpoA7wnMTdR1/U7FjVjVSUBnFgAN5ORXZgsf3oCLaCb9S/AqD9b5xSktsDH8CnpB6yZKoESARUsK9Y9tsQOE4ADgV9C28oOeA/MDm4dIz/PJIeRQeSArEGbzPBYIsFaRMYiqr6mNJoNUtsSH6n3qcwazhFzKr6hNSxrmBC3HLohvVZ8/AOgw6IWcMPNPhwHwaA5hFF8dk9oCUtEL0YnacBx98MZV+UwePmfOyx5XqQbzCQYtQl1Et3WyEoFEwm1u1LCEylai7tuNl8Zb4gaBN5j/oLOrl5sM0UE7tgNFXNTj07lGixqQFjSEsjaNhPTBJxV9TfWWclc7O7zSU7yq7+Jym1zaDCdSC1p0UpsWzg59KG6vrtXj1p7AH9+cYE0zKI1L/smJM8f1ABtBycO1+ttybHzA0Tt48kINipmGx4IkaVOmRQS96znnijg4R3WVrmAvKp0wiItywxh6ztkFRqU/7PmWVqD/e0NT/odkNAhkpvf7zJlpXQqV+ctS9BQ=
-  file: finegraphics-*.zip
-  on:
-    tags: false
-    repo: matusnovak/finegraphics
-    branch: master
