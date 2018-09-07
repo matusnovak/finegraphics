@@ -5,6 +5,7 @@ module.exports = {
         sidebar: 'auto',
         nav: [
             { text: 'Home', link: '/' },
+            { text: 'Install', link: '/INSTALL' },
             { text: 'Examples', link: '/examples/' },
             { text: 'Modules', link: '/doxygen/modules' },
             {

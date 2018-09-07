@@ -59,6 +59,8 @@ compile_gcc: &compile_gcc
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
           GCC_MACHINE=$(gcc -dumpmachine)
           GCC_VERSION=$(gcc -dumpversion)
+          git config --global user.email "matusnov@gmail.com"
+          git config --global user.name "Matus Novak"
           .\bin\linux\amd64\github-release release --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name "FineGraphics - $GITHUB_RELEASE_TAG" --description "$COMMIT_MESSAGE" || true
           .\bin\linux\amd64\github-release upload --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name finegraphics-$GCC_MACHINE-$GCC_VERSION.zip --file finegraphics-$GCC_MACHINE-$GCC_VERSION.zip
 
