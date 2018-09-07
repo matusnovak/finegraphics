@@ -110,6 +110,7 @@ after_test:
 
 before_deploy:
   - cmd: call .\next_git_tag.bat
+  - ps: appveyor SetVariable -Name APPVEYOR_REPO_COMMIT_MESSAGE -Value (git log -1 --pretty=%B)
 
 #---------------------------------#
 #      artifacts configuration    #
@@ -122,7 +123,7 @@ artifacts:
 #           deployment            #
 #---------------------------------#
 deploy:
-  description: '$(APPVEYOR_REPO_COMMIT_MESSAGE)\n$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)'
+  description: '$(APPVEYOR_REPO_COMMIT_MESSAGE)'
   tag: $(appveyor_repo_tag_name)
   release: 'FineGraphics - $(appveyor_repo_tag_name)'
   provider: GitHub

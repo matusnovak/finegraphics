@@ -9,7 +9,7 @@ ffw::GLRenderbuffer2D::GLRenderbuffer2D(GLRenderbuffer2D&& other) NOEXCEPT :GLRe
 }
 
 ///=============================================================================
-ffw::GLRenderbuffer2D& ffw::GLRenderbuffer2D::operator=(GLRenderbuffer2D&& other) noexcept {
+ffw::GLRenderbuffer2D& ffw::GLRenderbuffer2D::operator=(GLRenderbuffer2D&& other) NOEXCEPT {
     if (this != &other) {
         swap(other);
     }

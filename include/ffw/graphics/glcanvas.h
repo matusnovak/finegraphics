@@ -141,8 +141,17 @@ namespace ffw {
         };
 
         struct FFW_API Paint {
+#if defined(_MSC_VER) && _MSC_VER == 1800
+            Paint() {
+                xform[0] = xform[1] = xform[2] = xform[3] = xform[4] = xform[5] = 0;
+                extent[0] = extent[1] = 0;
+            }
+            float xform[6];
+            float extent[2];
+#else
             float xform[6] = { 0 };
             float extent[2] = { 0 };
+#endif
             float radius = 0;
             float feather = 0;
             Color innerColor;
