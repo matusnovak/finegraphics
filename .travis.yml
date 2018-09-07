@@ -40,8 +40,7 @@ script:
   - mkdir build
   - cd build && (cmake ..  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=MinSizeRel || travis_terminate 1) && cd ..
   - cd build && (make install || travis_terminate 1) && cd ..
-  - NON_OPENGL_TESTS="-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4"
-  - cd build && (ctest --verbose -C MinSizeRel $NON_OPENGL_TESTS || travis_terminate 1) && cd ..
+  - cd build && (ctest --verbose -C MinSizeRel -E "test_gl" || travis_terminate 1) && cd ..
   - ./next_git_tag.sh
   - export GCC_MACHINE=$(gcc -dumpmachine)
   - export GCC_VERSION=$(gcc -dumpversion)

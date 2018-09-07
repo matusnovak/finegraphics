@@ -93,11 +93,10 @@ build_script:
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target ALL_BUILD --config MinSizeRel || exit 1 & cd ..)
 
 test_script:
-  - cmd: set NON_OPENGL_TESTS="-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4"
-  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose %NON_OPENGL_TESTS% || exit 1 & cd ..)
-  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose %NON_OPENGL_TESTS% || exit 1 & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug" %NON_OPENGL_TESTS% || exit 1 & cd ..)
-  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel" %NON_OPENGL_TESTS% || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-debug & ctest --verbose -E "test_gl" || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[mingw] (cd build-release & ctest --verbose -E "test_gl" || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "Debug" -E "test_gl" || exit 1 & cd ..)
+  - cmd: if [%COMPILER%]==[msvc] (cd build & ctest --verbose -C "MinSizeRel" -E "test_gl" || exit 1 & cd ..)
 
 after_test:
   - cmd: if [%COMPILER%]==[mingw] (cd build-debug & cmake --build . --target install || exit 1 & cd ..)

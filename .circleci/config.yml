@@ -4,6 +4,8 @@ compile_gcc: &compile_gcc
     - run:
         name: Init dependencies
         command: |
+          git config --global user.email "matusnov@gmail.com"
+          git config --global user.name "Matus Novak"
           apt-get update
           apt-get install zip xorg-dev libgl1-mesa-glx libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev mesa-common-dev wget -y
           wget https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz
@@ -35,8 +37,7 @@ compile_gcc: &compile_gcc
         name: Test
         command: |
           cd build
-          NON_OPENGL_TESTS="-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4"
-          ctest --verbose -C MinSizeRel $NON_OPENGL_TESTS
+          ctest --verbose -C MinSizeRel -E "test_gl"
     - run:
         name: Package
         command: |
@@ -59,8 +60,6 @@ compile_gcc: &compile_gcc
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
           GCC_MACHINE=$(gcc -dumpmachine)
           GCC_VERSION=$(gcc -dumpversion)
-          git config --global user.email "matusnov@gmail.com"
-          git config --global user.name "Matus Novak"
           .\bin\linux\amd64\github-release release --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name "FineGraphics - $GITHUB_RELEASE_TAG" --description "$COMMIT_MESSAGE" || true
           .\bin\linux\amd64\github-release upload --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name finegraphics-$GCC_MACHINE-$GCC_VERSION.zip --file finegraphics-$GCC_MACHINE-$GCC_VERSION.zip
 
