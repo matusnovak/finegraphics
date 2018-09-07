@@ -5,7 +5,7 @@
 #include "ffw/graphics/monitors.h"
 #include <GLFW/glfw3.h>
 
-static thread_local std::string lastError;
+static std::string lastError;
 
 static const char* glfwErrorToStr(const int code) {
     switch(code) {
@@ -42,12 +42,12 @@ public:
     }
     bool init() {
         if (counter == 0) {
+            glfwSetErrorCallback(&glfwErrorFunc);
             const auto result = glfwInit();
             if(!result) {
                 return false;
             }
         }
-        glfwSetErrorCallback(&glfwErrorFunc);
         counter++;
         return true;
     }

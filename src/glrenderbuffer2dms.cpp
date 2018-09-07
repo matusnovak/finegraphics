@@ -9,7 +9,7 @@ ffw::GLRenderbuffer2DMS::GLRenderbuffer2DMS(GLRenderbuffer2DMS&& other) NOEXCEPT
 }
 
 ///=============================================================================
-ffw::GLRenderbuffer2DMS& ffw::GLRenderbuffer2DMS::operator=(GLRenderbuffer2DMS&& other) noexcept {
+ffw::GLRenderbuffer2DMS& ffw::GLRenderbuffer2DMS::operator=(GLRenderbuffer2DMS&& other) NOEXCEPT {
     if (this != &other) {
         swap(other);
     }
