@@ -27,6 +27,7 @@ All dependencies listed here are already included as a git submodule and will be
 * [nanovg](https://github.com/memononen/nanovg) - Used as a 2D canvas rendering backend
 * [tinyobjloader](https://github.com/syoyo/tinyobjloader.git) - Only used in examples
 * [zlib](https://github.com/madler/zlib) - Needed by FreeType2
+* [bzip2](https://github.com/enthought/bzip2-1.0.6) - Needed by FreeType2
 
 ## TODO
 

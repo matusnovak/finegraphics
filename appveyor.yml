@@ -106,7 +106,7 @@ after_test:
   - cmd: if [%COMPILER%]==[mingw] (cd build-release & cmake --build . --target install || exit 1 & cd ..)
   - cmd: if [%COMPILER%]==[msvc] (cd build & cmake --build . --target INSTALL --config MinSizeRel || exit 1 & cd ..)
 #  - cmd: ren install release
-  - cmd: 7z.exe a "ffw-%ARCH%-%TOOLSET%.zip" .\install || exit 1
+  - cmd: 7z.exe a "finegraphics-%ARCH%-%TOOLSET%.zip" .\install || exit 1
 
 before_deploy:
   - cmd: call .\next_git_tag.bat
@@ -116,7 +116,7 @@ before_deploy:
 #      artifacts configuration    #
 #---------------------------------#
 artifacts:
-  - path: ffw-*.zip
+  - path: finegraphics-*.zip
     name: Compiled
 
 #---------------------------------#
@@ -125,7 +125,7 @@ artifacts:
 deploy:
   description: '$(APPVEYOR_REPO_COMMIT_MESSAGE)'
   tag: $(appveyor_repo_tag_name)
-  release: 'FineGraphics - $(appveyor_repo_tag_name)'
+  release: 'Compiled - $(appveyor_repo_tag_name)'
   provider: GitHub
   artifact: /.*\.zip/
   draft: false

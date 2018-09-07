@@ -1,0 +1,102 @@
+compile_gcc: &compile_gcc
+  steps:
+    - checkout
+    - run:
+        name: Init dependencies
+        command: |
+          apt-get update
+          apt-get install zip xorg-dev libgl1-mesa-glx libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev mesa-common-dev wget -y
+          wget https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz
+          tar -xvzf cmake-3.10.2-Linux-x86_64.tar.gz
+          chmod +x ./cmake-3.10.2-Linux-x86_64/bin/ccmake
+          chmod +x ./cmake-3.10.2-Linux-x86_64/bin/cmake
+          chmod +x ./cmake-3.10.2-Linux-x86_64/bin/cpack
+          chmod +x ./cmake-3.10.2-Linux-x86_64/bin/ctest
+          DIR=$(pwd)
+          ln -s $DIR/cmake-3.10.2-Linux-x86_64/bin/ccmake /usr/bin/ccmake
+          ln -s $DIR/cmake-3.10.2-Linux-x86_64/bin/cmake /usr/bin/cmake
+          ln -s $DIR/cmake-3.10.2-Linux-x86_64/bin/cpack /usr/bin/cpack
+          ln -s $DIR/cmake-3.10.2-Linux-x86_64/bin/ctest /usr/bin/ctest
+          curl -k -o next_git_tag.sh https://gist.githubusercontent.com/matusnovak/eba81343f5578c38cf0a9bc22b548727/raw/1678041e118a77c3083216cbf55bcf7b46e02e38/next_git_tag.sh
+          chmod +x next_git_tag.sh
+    - run:
+        name: Init submodules
+        command: |
+          git submodule init
+          git submodule update
+    - run:
+        name: Build
+        command: |
+          cd build
+          make install || exit 1
+    - run:
+        name: Test
+        command: |
+          cd build
+          export NON_OPENGL_TESTS=-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4
+          ctest --verbose -C MinSizeRel $NON_OPENGL_TESTS
+    - run:
+        name: Package
+        command: |
+          ./next_git_tag.sh
+          GCC_MACHINE=$(gcc -dumpmachine)
+          GCC_VERSION=$(gcc -dumpversion)
+          cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" *
+          mkdir /tmp/install
+          cp *.zip /tmp/install
+          
+    - store_artifacts:
+        path: /tmp/install
+
+    - run:
+        name: Deploy
+        command: |
+          if ["$CIRCLE_BRANCH" != "devel"]; then exit 0; fi
+          wget https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
+          tar -xvjf linux-amd64-github-release.tar.bz2
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          GCC_MACHINE=$(gcc -dumpmachine)
+          GCC_VERSION=$(gcc -dumpversion)
+          .\bin\linux\amd64\github-release release --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name "FineGraphics - $GITHUB_RELEASE_TAG" --description "$COMMIT_MESSAGE" || true
+          .\bin\linux\amd64\github-release upload --user $CIRCLE_PROJECT_USERNAME --repo $CIRCLE_PROJECT_REPONAME --tag $GITHUB_RELEASE_TAG --name finegraphics-$GCC_MACHINE-$GCC_VERSION.zip --file finegraphics-$GCC_MACHINE-$GCC_VERSION.zip
+
+version: 2
+jobs:
+  compile_gcc_550:
+    <<: *compile_gcc
+
+    docker:
+      - image: gcc:5.5.0
+        env:
+          - ARCH: 'x86_64'
+          - TOOLSET: 'linux-gnu'
+
+  compile_gcc_640:
+    <<: *compile_gcc
+
+    docker:
+      - image: gcc:6.4.0
+        env:
+          - ARCH: 'x86_64'
+          - TOOLSET: 'linux-gnu'
+  
+  compile_gcc_730:
+    <<: *compile_gcc
+
+    docker:
+      - image: gcc:7.3.0
+        env:
+          - ARCH: 'x86_64'
+          - TOOLSET: 'linux-gnu'
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - compile_gcc_550
+      - compile_gcc_640:
+          requires:
+            - compile_gcc_550
+      - compile_gcc_730:
+          requires:
+            - compile_gcc_640

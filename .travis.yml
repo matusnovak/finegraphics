@@ -38,12 +38,14 @@ script:
   - gcc --version
   - g++ --version
   - mkdir build
-  - cd build && cmake ..  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=MinSizeRel && cd ..
-  - cd build && make all && make install && cd ..
+  - cd build && (cmake ..  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=MinSizeRel || exit 1) && cd ..
+  - cd build && (make install || exit 1) && cd ..
+  - export NON_OPENGL_TESTS=-R test_color -R test_mat3 -R test_mat4 -R test_quaternion -R test_vec2 -R test_vec3 -R test_vec4
+  - cd build && (ctest --verbose -C MinSizeRel $NON_OPENGL_TESTS || exit 1) && cd ..
   - ./next_git_tag.sh
   - export GCC_MACHINE=$(gcc -dumpmachine)
   - export GCC_VERSION=$(gcc -dumpversion)
-  - cd install && zip -r "../ffw-$GCC_MACHINE-$GCC_VERSION.zip" *
+  - cd install && zip -r "../finegraphics-$GCC_MACHINE-$GCC_VERSION.zip" *
 branches:
   only:
   - master
@@ -66,13 +68,13 @@ deploy:
   skip_cleanup: true
   target_commitish: $TRAVIS_COMMIT
   tag_name: $TRAVIS_TAG
-  name: "FineGraphics - $TRAVIS_TAG"
+  name: "Compiled - $TRAVIS_TAG"
   body: "$TRAVIS_COMMIT_MESSAGE"
   draft: false
   file_glob: true
   api_key:
     secure: lUJnilARIKozAS5OKbvFPjYis21mUk6BSdTMLGdKf0T1F9hoV3Asb/qI8siF2c6/7KMq6xibt5TH3O27a7HuNuzgckPpyYiFoOcMzDQtShPJ8qCnJJtZK/Fjb8Z7pe4zYTjIY+NjvsPd1SGhqb3YR8oLSOqr6WVocp0js5QPJJakbX4PMV2Ir4yUWgC/A/6e53gvTfCBlxM6cKbcrX8spPaKbU7GdE0XpVgoLD/qPcteZJjWJSrLHT4hM5nTcKdbClQIdsN0LEz74zE0C5KmIWcyW/PoJpxqWMX6Zdk7105Zo0sbTKDTsyxGWHnfqcrfG8fAikGTYAzTU1zTv9fykJnS2fMhVcLBSMl2KtnN7HWCFCD43T8y5qqlreF1/KPdNypIQrwOC4ZkmcyiorLWCyU2vXKeAgGTaQyi+X3PSMlEsgbnZm0S+kIX5XxWuwW/5Qu3Wzq7LvEdXfK3u+fb7yoPEZ+di3ZioJt7zrxZqwEy1gcq3wV5WYa7gBQa05T6c35D/nHHipiIDXubhL+mP83b9SSO81ubOYBedSf3dht0u/B/Qn9Vta+gnquuP+/jvvPXzp4dZBcJfGfsjrGMkLA3VVf79POSYWoYwfS2DlFzZApxYBsP3rROWaPMN1jSYzqaur3diyOtq3Ad/Af5oso+bt8VcjpY7GlyYfCZa6g=
-  file: ffw-*.zip
+  file: finegraphics-*.zip
   on:
     tags: false
     repo: matusnovak/finegraphics

@@ -97,5 +97,19 @@ else(MSVC)
   set(FREETYPE2_LIBRARY ${CMAKE_BINARY_DIR}/FREETYPE2-prefix/src/FREETYPE2-build/libfreetype.a)
 endif(MSVC)
 
+if(UNIX OR APPLE)
+  ExternalProject_Add(BZIP2
+    DOWNLOAD_COMMAND ""
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/libs/bzip2-1.0.6
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND cd ${CMAKE_SOURCE_DIR}/libs && chmod +x ./make_bzip2.sh && ./make_bzip2.sh ${CMAKE_BINARY_DIR}/BZIP2-prefix/src/BZIP2-build
+    INSTALL_COMMAND ""
+    TEST_COMMAND ""
+  )
+
+  set(BZIP2_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/libs/bzip2-1.0.6)
+  set(BZIP2_LIBRARY ${CMAKE_BINARY_DIR}/BZIP2-prefix/src/BZIP2-build/libbz2.a)
+endif()
+
 set(NANOVG_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/libs/nanovg/src)
 set(TINYOBJLOADER_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/libs/tinyobjloader)

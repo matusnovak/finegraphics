@@ -31,6 +31,9 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "fineframework/libs") 
 add_dependencies(${PROJECT_NAME} FREETYPE2)
 add_dependencies(${PROJECT_NAME} GLFW3)
+if(UNIX OR APPLE)
+  add_dependencies(${PROJECT_NAME} BZIP2)
+endif()
 
 # Dependencies
 include_directories(${CMAKE_SOURCE_DIR}/include)
