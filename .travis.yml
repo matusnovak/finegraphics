@@ -57,7 +57,7 @@ notifications:
 before_deploy:
   - pwd
   - ls
-  - ./next_git_tag.sh
+  - source ./next_git_tag.sh
   - echo "Exporting TRAVIS_TAG $GITHUB_RELEASE_TAG"
   - export TRAVIS_TAG=$GITHUB_RELEASE_TAG
 deploy:
