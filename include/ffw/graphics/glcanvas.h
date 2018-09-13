@@ -121,6 +121,10 @@ namespace ffw {
             void swap(Image& other) NOEXCEPT;
             virtual ~Image();
 
+            inline bool isCreated() const {
+                return ref >= 0;
+            }
+
             const GLCanvas* canvas = nullptr;
             int ref = -1;
         };
@@ -135,6 +139,10 @@ namespace ffw {
             Font& operator = (Font&& other) NOEXCEPT;
             void swap(Font& other) NOEXCEPT;
             virtual ~Font();
+
+            inline bool isCreated() const {
+                return ref >= 0;
+            }
 
             const GLCanvas* canvas = nullptr;
             int ref = -1;
@@ -577,7 +585,7 @@ namespace ffw {
          * text should be returned. The bounds value are [xmin,ymin, xmax,ymax] Measured values 
          * are returned in local coordinate space.
          */
-        Vec2f textBoxBounds(const Vec2f& pos, float breakRowWidth,
+        Vec4f textBoxBounds(const Vec2f& pos, float breakRowWidth,
             const char* string, const char* end) const;
         /**
         * @brief Measures the specified multi-text string
@@ -585,13 +593,40 @@ namespace ffw {
         * text should be returned. The bounds value are [xmin,ymin, xmax,ymax] Measured values
         * are returned in local coordinate space.
         */
-        Vec2f textBoxBounds(const Vec2f& pos, float breakRowWidth, const std::string& str) const ;
+        Vec4f textBoxBounds(const Vec2f& pos, float breakRowWidth, const std::string& str) const ;
         /**
          * @brief Returns the vertical metrics based on the current text style
          * @details Measured values are returned in local coordinate space.
          */
         void textMetrics(float& ascender, float& descender, float& lineh) const;
-
+        /**
+         * @brief Breaks the specified text into lines. If end is specified only the sub-string
+         * will be used.
+         * @details White space is stripped at the beginning of the rows, the text is split at 
+         * word boundaries or when new-line characters are encountered. Words longer than the 
+         * max width are slit at nearest character (i.e. no hyphenation).
+         */
+        int textBreakLines(const char* string, const char* end, float width, TextRow* rows, size_t numrows) const;
+        /**
+         * @brief Breaks the specified text into lines. If end is specified only the sub-string
+         * will be used.
+         * @details White space is stripped at the beginning of the rows, the text is split at 
+         * word boundaries or when new-line characters are encountered. Words longer than the
+         * max width are slit at nearest character (i.e. no hyphenation).
+         */
+        int textBreakLines(const std::string& string, float width, TextRow* rows, size_t numrows) const;
+        /**
+         * @brief Calculates the glyph x positions of the specified text.
+         * @details If end is specified only the sub-string will be used. Measured values are 
+         * returned in local coordinate space.
+         */
+        int textGlyphPositions(const Vec2f& pos, const std::string& str, GlyphPosition* positions, size_t numpositions) const;
+        /**
+         * @brief Calculates the glyph x positions of the specified text.
+         * @details If end is specified only the sub-string will be used. Measured values are 
+         * returned in local coordinate space.
+         */
+        int textGlyphPositions(const Vec2f& pos, const char* string, const char* end, GlyphPosition* positions, size_t numpositions) const;
         friend Font;
         friend Image;
     private:

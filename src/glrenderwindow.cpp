@@ -226,6 +226,8 @@ static void* getProcaddress(const char* str) {
     return reinterpret_cast<void*>(glfwGetProcAddress(str));
 }
 
+#include <iostream>
+
 ///=============================================================================
 ffw::GLRenderWindow::GLRenderWindow(const RenderWindowArgs& args, GLRenderWindow* other, Monitor* monitor):pimpl(new Impl){
     pimpl->initialized = false;
