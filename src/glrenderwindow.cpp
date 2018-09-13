@@ -226,6 +226,8 @@ static void* getProcaddress(const char* str) {
     return reinterpret_cast<void*>(glfwGetProcAddress(str));
 }
 
+#include <iostream>
+
 ///=============================================================================
 ffw::GLRenderWindow::GLRenderWindow(const RenderWindowArgs& args, GLRenderWindow* other, Monitor* monitor):pimpl(new Impl){
     pimpl->initialized = false;
@@ -262,7 +264,7 @@ ffw::GLRenderWindow::GLRenderWindow(const RenderWindowArgs& args, GLRenderWindow
     if (other != nullptr)parentWindowHandle = other->pimpl->windowHandle;
     if (monitor != nullptr)targetMonitor = static_cast<GLFWmonitor*>(monitor->ptr);
 
-    const auto newWindowContext = glfwCreateWindow(args.size.x, args.size.y, args.title.c_str(), targetMonitor, parentWindowHandle);
+    const auto newWindowContext = glfwCreateWindow(args.size.x, args.size.y, args.title, targetMonitor, parentWindowHandle);
 
     if (newWindowContext == nullptr) throw WindowException("Failed to create a window " + lastError);
 

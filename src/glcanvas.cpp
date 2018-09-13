@@ -743,8 +743,8 @@ float ffw::GLCanvas::textBounds(const Vec2f& pos, const char* string, const char
 }
 
 ///=============================================================================
-ffw::Vec2f ffw::GLCanvas::textBoxBounds(const Vec2f& pos, const float breakRowWidth, const char* string, const char* end) const {
-    Vec2f ret;
+ffw::Vec4f ffw::GLCanvas::textBoxBounds(const Vec2f& pos, const float breakRowWidth, const char* string, const char* end) const {
+    ffw::Vec4f ret;
     nvgTextBoxBounds(pimpl->nvg, pos.x, pos.y, breakRowWidth, string, end, &ret[0]);
     return ret;
 }
@@ -770,6 +770,26 @@ float ffw::GLCanvas::textBounds(const Vec2f& pos, const std::string& str, Vec4f&
 }
 
 ///=============================================================================
-ffw::Vec2f ffw::GLCanvas::textBoxBounds(const Vec2f& pos, float breakRowWidth, const std::string& str) const {
+ffw::Vec4f ffw::GLCanvas::textBoxBounds(const Vec2f& pos, float breakRowWidth, const std::string& str) const {
     return textBoxBounds(pos, breakRowWidth, str.c_str(), str.c_str() + str.size());
+}
+
+///=============================================================================
+int ffw::GLCanvas::textBreakLines(const char* string, const char* end, float width, TextRow* rows, size_t numrows) const {
+    return nvgTextBreakLines(pimpl->nvg, string, end, width, reinterpret_cast<NVGtextRow*>(rows), numrows);
+}
+
+///=============================================================================
+int ffw::GLCanvas::textBreakLines(const std::string& string, float width, TextRow* rows, size_t numrows) const {
+    return textBreakLines(string.c_str(), string.c_str() + string.size(), width, rows, numrows);
+}
+
+///=============================================================================
+int ffw::GLCanvas::textGlyphPositions(const Vec2f& pos, const char* string, const char* end, GlyphPosition* positions, size_t numpositions) const {
+    return nvgTextGlyphPositions(pimpl->nvg, pos.x, pos.y, string, end, reinterpret_cast<NVGglyphPosition*>(positions), numpositions);
+}
+
+///=============================================================================
+int ffw::GLCanvas::textGlyphPositions(const Vec2f& pos, const std::string& str, GlyphPosition* positions, size_t numpositions) const {
+    return textGlyphPositions(pos, str.c_str(), str.c_str() + str.size(), positions, numpositions);
 }
