@@ -25,6 +25,11 @@ namespace ffw {
         OPENGL_ES,
         ANY
     };
+    enum class ClientGLProfile {
+        ANY,
+        CORE,
+        COMPAT
+    };
     /**
     * @ingroup graphics
     */
@@ -33,6 +38,10 @@ namespace ffw {
          * @brief Which OpenGL API to use?
          */
         ClientGLAPI glApi = ClientGLAPI::ANY;
+        /**
+         * @brief Which OpenGL profile to use?
+         */
+        ClientGLProfile glProfile = ClientGLProfile::ANY;
         /**
         * @brief Position of the window, set to [-1, -1] for the OS to decide
         */
@@ -86,6 +95,22 @@ namespace ffw {
         * @brief Window icon height
         */
         int iconHeight = 0;
+        /**
+         * @brief Context client API version
+         * @details Set the x and y values of this vector to set
+         * the target context version, where x = major and y = minor.
+         * Default value is (0, 0) which will not set any version. For example,
+         * settings this vector to (3, 3) will set the client API (OpenGL) to 3.3.0
+         * @note Settings x (major) to zero will not do anything.
+         */
+        Vec2<int> contextVersion = Vec2<int>(0, 0);
+        /**
+         * @brief Sets the core profile to CORE and the context version to 3.3
+         */
+        void setCore() {
+            contextVersion.set(3, 3);
+            glProfile = ClientGLProfile::CORE;
+        }
     };
     /**
     * @ingroup graphics

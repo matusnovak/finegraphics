@@ -53,6 +53,10 @@ public:
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         try {
+            // Create our vertex array
+            // Needed if running Core Profile
+            vertexArray = ffw::GLVertexArray(true);
+
             // Compile and link shaders into a program
             vertShader = ffw::GLShader(GL_VERTEX_SHADER, vertShaderSource);
             fragShader = ffw::GLShader(GL_FRAGMENT_SHADER, fragShaderSource);
@@ -107,6 +111,7 @@ private:
     ffw::GLProgram program;
     ffw::GLVertexBuffer vboPosition;
     ffw::GLVertexBuffer vboColor;
+    ffw::GLVertexArray vertexArray;
     int locColor;
     int locPosition;
     int locAlpha;
@@ -120,6 +125,7 @@ int main(int argc, char *argv[]) {
     args.size = ffw::Vec2<int>(640, 480);
     args.title = "Shader Example";
     args.samples = 4;
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {

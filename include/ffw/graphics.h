@@ -34,6 +34,7 @@
 #include "graphics/gltexture3d.h"
 #include "graphics/gltexturecubemap.h"
 #include "graphics/glrenderwindow.h"
+#include "graphics/glvertexarray.h"
 #include "graphics/mvp.h"
 #include "graphics/mat3.h"
 #include "graphics/mat4.h"
