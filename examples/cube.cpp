@@ -33,32 +33,44 @@ static const float cubeVertices [] = {
     -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
     -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
     1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
     1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+    -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
 
     -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
     -1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
     1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
     1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-
-    -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
-    -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
-    -1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
     -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
 
     -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+    -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
+    -1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+    -1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+    -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+    -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+
+    -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
     1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
     1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
     -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
+    -1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
 
     1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
     1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
     1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
     1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, -1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
 
     1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
     1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 1.0f,
     -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
+    -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, 0.0f,
     -1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+    1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
 };
 
 ///=============================================================================
@@ -67,6 +79,9 @@ public:
     App(const ffw::RenderWindowArgs& args) :GLRenderWindow(args, nullptr) {
 
         try {
+            // Create our vertex array
+            vertexArray = ffw::GLVertexArray(true);
+            
             // Compile and link shaders into a program
             boxShaderVert = ffw::GLShader(GL_VERTEX_SHADER, vertShaderSource);
             boxShaderFrag = ffw::GLShader(GL_FRAGMENT_SHADER, fragShaderSource);
@@ -76,6 +91,15 @@ public:
 
             // Allocate VBO
             boxVbo = ffw::GLVertexBuffer(cubeVertices, sizeof(cubeVertices), GL_STATIC_DRAW);
+
+            // set the position attribute to length 3 starting at position 0 in the vertex buffer
+            // Each vertex has 8 floats total: {Px, Py, Pz, Nx, Ny, Nz, U, V}
+            // Where P is position, N is normal and UV are texture coordinates
+            vertexArray.setAttributePointerf(boxProgram.getAttributeLocation("position"), 3, 6 * sizeof(float), (void*)(0 * sizeof(float)));
+            // set the normal attribute to length 3 starting at position 3 in the vertex buffer
+            vertexArray.setAttributePointerf(boxProgram.getAttributeLocation("color"), 3, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+            vertexArray.unbind();
         }
         catch (ffw::GLException& e) {
             std::cerr << "Failed to initialize shaders: " << e.what() << std::endl;
@@ -117,26 +141,22 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Begin shader program
         boxProgram.bind();
-        // bind cube object
-        boxVbo.bind();
-        // set uniforms and attribute pointers
-        // set the position attribute to length 3 starting at position 0 in the vertex buffer
-        // Each vertex has 8 floats total: {Px, Py, Pz, Nx, Ny, Nz, U, V}
-        // Where P is position, N is normal and UV are texture coordinates
-        boxProgram.setAttributePointerf(boxProgram.getAttributeLocation("position"), 3, 6 * sizeof(float), (void*)(0 * sizeof(float)));
-        // set the normal attribute to length 3 starting at position 3 in the vertex buffer
-        boxProgram.setAttributePointerf(boxProgram.getAttributeLocation("color"), 3, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        // Bind our vertex array
+        // This VAO also holds the vertex buffers containing the vertex data
+        // It does not hold the actual data, rather than a reference 
+        vertexArray.bind();
+        // set uniforms
         // set the model, view and projection matrices
         boxProgram.setUniformMatrix4fv(boxProgram.getUniformLocation("model"), &modelMatrix[0], 1);
         boxProgram.setUniformMatrix4fv(boxProgram.getUniformLocation("view"), &viewMatrix[0], 1);
         boxProgram.setUniformMatrix4fv(boxProgram.getUniformLocation("projection"), &projectionMatrix[0], 1);
         // draw whole object
         // 6 floats per one vertex
-        boxProgram.drawArrays(GL_QUADS, 0, boxVbo.getSize() / sizeof(float) / 6);
+        boxProgram.drawArrays(GL_TRIANGLES, 0, boxVbo.getSize() / sizeof(float) / 6);
         
         // Stop object shader
         boxProgram.unbind();
-        boxVbo.unbind();
+        vertexArray.unbind();
     }
 
     void textInputEvent(unsigned int c) override {
@@ -211,6 +231,7 @@ private:
     ffw::GLShader boxShaderVert;
     ffw::GLProgram boxProgram;
     ffw::GLVertexBuffer boxVbo;
+    ffw::GLVertexArray vertexArray;
 
     // Model, view and projection matrices used in shader
     ffw::Mat4x4f projectionMatrix;
@@ -231,6 +252,7 @@ int main(int argc, char *argv[]) {
     args.size = ffw::Vec2<int>(800, 600);
     args.title = "Cube Example";
     args.samples = 4;
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {

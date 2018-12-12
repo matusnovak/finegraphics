@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
     args.size = ffw::Vec2<int>(800, 600);
     args.title = "Tree Example";
     args.samples = 4;
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {

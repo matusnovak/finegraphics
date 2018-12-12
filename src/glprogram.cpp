@@ -89,17 +89,28 @@ void ffw::GLProgram::unbind() const {
     if (loaded) {
         // We need to disable attrib array
         // Otherwise this will mess up any old pipeline draw calls 
-        glDisableVertexAttribArray(0);
         glUseProgram(0);
     }
 }
 
 ///=============================================================================
-void ffw::GLProgram::setAttributePointerf(GLint location, GLint size, GLsizei stride, const GLvoid* offset) const {
+void ffw::GLProgram::enableVertexAttribArray(GLint location) const {
     // Enable attribute
     glEnableVertexAttribArray(location);
+}
+
+///=============================================================================
+void ffw::GLProgram::disableVertexAttribArray(GLint location) const {
+    // Enable attribute
+    glDisableVertexAttribArray(location);
+}
+
+///=============================================================================
+void ffw::GLProgram::setAttributePointerf(GLint location, GLint size, GLsizei stride, const GLvoid* offset) const {
     // set the pointer of the attribute
     glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, offset);
+    // Enable attribute
+    enableVertexAttribArray(location);
 }
 
 ///=============================================================================

@@ -19,4 +19,5 @@ public:
     ffw::RenderWindowArgs args; \
     args.size.set(1280, 720); \
     args.visible = false; \
+    args.setCore(); \
     DummyApp app(args);

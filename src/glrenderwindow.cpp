@@ -250,6 +250,23 @@ ffw::GLRenderWindow::GLRenderWindow(const RenderWindowArgs& args, GLRenderWindow
     glfwWindowHint(GLFW_VISIBLE, args.visible);
     //glfwWindowHint(GLFW_DOUBLEBUFFER, !Args.singleBuffer);
 
+    if (args.contextVersion.x > 0) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, args.contextVersion.x);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, args.contextVersion.y);
+    }
+    
+    switch (args.glProfile) {
+        case ClientGLProfile::ANY: glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE); break;
+        case ClientGLProfile::CORE: glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); break;
+        case ClientGLProfile::COMPAT: glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); break;
+        default: break;
+    }
+
+#ifdef __APPLE__
+    if (args.glProfile == ClientGLProfile::CORE) 
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
     switch(args.glApi) {
         case ClientGLAPI::NONE: glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); break;
         case ClientGLAPI::OPENGL: glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API); break;

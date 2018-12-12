@@ -106,6 +106,7 @@ int main(int argc, char *argv[]) {
     args.size = ffw::Vec2<int>(400, 400);
     args.title = "Empty Example";
     args.samples = 4;
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {

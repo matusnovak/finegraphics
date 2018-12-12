@@ -75,6 +75,7 @@ int main(int argc, char *argv[]) {
     ffw::RenderWindowArgs args;
     args.size = ffw::Vec2<int>(500, 500);
     args.title = "True Type Font Example";
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {

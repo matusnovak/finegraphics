@@ -180,6 +180,10 @@ public:
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
         try {
+            // Create our vertex array
+            // Needed if running Core Profile
+            vertexArray = ffw::GLVertexArray(true);
+
             // Compile and link shaders into a program
             monkeyShaderVert = ffw::GLShader(GL_VERTEX_SHADER, monkeyVertexShaderCode);
             monkeyShaderFrag = ffw::GLShader(GL_FRAGMENT_SHADER, monkeyFragmentShaderCode);
@@ -389,6 +393,7 @@ private:
     ffw::GLVertexBuffer skyboxVbo;
 
     ffw::GLTextureCubemap skyboxTexture;
+    ffw::GLVertexArray vertexArray;
 
     // Model, view and projection matrices used in shader
     ffw::Mat4x4f projectionMatrix;
@@ -410,6 +415,7 @@ int main(int argc, char *argv[]) {
     args.size = ffw::Vec2<int>(800, 600);
     args.title = "Cubemap Example";
     args.samples = 4;
+    args.setCore(); // Sets core profile
 
     // Instance to our app class
     try {
