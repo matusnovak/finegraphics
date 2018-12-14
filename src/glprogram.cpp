@@ -14,11 +14,22 @@ ffw::GLProgram::GLProgram(const std::initializer_list<GLShader*>& shaders) : loa
     if (handle == 0) throw GLException("Failed to create program object");
     glUseProgram(handle);
 
-    for (const auto& shdr : shaders) {
-        if (shdr != nullptr)
-            glAttachShader(handle, shdr->getHandle());
-    }
+    if (shaders.size() != 0) {
+        for (const auto& shdr : shaders) {
+            if (shdr != nullptr) attachShader(*shdr);
+        }
 
+        linkProgram();
+    }
+}
+
+///=============================================================================
+void ffw::GLProgram::attachShader(const GLShader& shader) {
+    glAttachShader(handle, shader.getHandle());
+}
+
+///=============================================================================
+void ffw::GLProgram::linkProgram() {
     glLinkProgram(handle);
     std::string err;
     if(!checkForProgramErrors(err)) {

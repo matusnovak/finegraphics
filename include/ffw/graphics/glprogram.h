@@ -9,6 +9,7 @@
 #include "vec4.h"
 #include "mat3.h"
 #include "mat4.h"
+#include <iostream>
 
 namespace ffw {
     /**
@@ -63,6 +64,9 @@ namespace ffw {
         GLProgram& operator = (const GLProgram& other) = delete;
         GLProgram& operator = (GLProgram&& other) NOEXCEPT;
         void swap(GLProgram& other) NOEXCEPT;
+
+        void attachShader(const GLShader& shader);
+        void linkProgram();
 
         void destroy();
         inline GLint getHandle() const {
